@@ -19,4 +19,27 @@ public class TaskTrackerContext : DbContext, IDbContext
     {
         return await base.SaveChangesAsync();
     }
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+
+        EntityTypeBuilder<Employee> employeeBuilder = builder.Entity<Employee>();
+        employeeBuilder
+            .HasMany(em => em.Requests)
+            .WithOne(re => re.Author)
+            .HasForeignKey(re => re.AuthorId);
+        employeeBuilder
+            .HasOne(em => em.AssignetRequest)
+            .WithOne(re => re.Performer)
+            .HasForeignKey<Request>(re => re.PerformerId);
+
+        EntityTypeBuilder<Request> requestBuilder = builder.Entity<Request>();
+        
+        EntityTypeBuilder<Department> depatmentBuilder = builder.Entity<Department>();
+        depatmentBuilder.HasData(DepartmentSeed.Data);
+        
+        EntityTypeBuilder<Position> positionBuilder = builder.Entity<Position>();
+        positionBuilder.HasData(PositionSeed.Data);
+    }
 }
