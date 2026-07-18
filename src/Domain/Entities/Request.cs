@@ -10,11 +10,10 @@ public class Request
     public int AuthorId { get; set; }
     public Employee Author { get; set; } = null!;
 
-    public int? PerformerId { get; private set; }
-    public Employee? Performer { get; private set; }
+    public int? AssigneeId { get; private set; }
+    public Employee? Assignee { get; private set; }
 
-    public int Number { get; set; }
-    public required string Title { get; set; }
+    public required string Description { get; set; }
     public DateTime CreatedDate { get; set; }
     public DateTime DeadLine { get; set; }
 
@@ -22,10 +21,10 @@ public class Request
 
     public void Assign(in Employee employee)
     {
-        if (PerformerId != default)
-            throw new Exception("Request already has a performer.");
+        if (AssigneeId != default)
+            throw new Exception("Request already has a assignee.");
 
-        Performer = employee;
+        Assignee = employee;
     }
 
     public void ChangeStatus(RequestStatus newStatus)

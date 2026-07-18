@@ -31,8 +31,8 @@ public class TaskTrackerContext : DbContext, IDbContext
             .HasForeignKey(re => re.AuthorId);
         employeeBuilder
             .HasOne(em => em.AssignetRequest)
-            .WithOne(re => re.Performer)
-            .HasForeignKey<Request>(re => re.PerformerId);
+            .WithOne(re => re.Assignee)
+            .HasForeignKey<Request>(re => re.AssigneeId);
 
         EntityTypeBuilder<Request> requestBuilder = builder.Entity<Request>();
         
