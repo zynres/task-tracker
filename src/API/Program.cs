@@ -10,8 +10,20 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        builder.Services.AddControllers();
+        
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddOpenApi();
+        builder.Services.AddSwaggerGen();
+
+        builder.Services.AddDbContext<TaskTrackerContext>(options => 
+            options.UseNpgsql(builder.Configuration.GetConnectionString("Db")));
+        builder.Services.AddScoped<IDbContext>(provider => 
+            provider.GetRequiredService<TaskTrackerContext>());
+
         var app = builder.Build();
 
+        if (app.Environment.IsDevelopment())
         app.Run();
     }
 }
