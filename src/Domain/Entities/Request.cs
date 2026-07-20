@@ -1,3 +1,4 @@
+using System.Data.Common;
 using Domain.Common.Enums;
 using Domain.Common.Statics;
 
@@ -13,18 +14,32 @@ public class Request
     public int? AssigneeId { get; private set; }
     public Employee? Assignee { get; private set; }
 
-    public required string Description { get; set; }
+    public string? Description { get; set; }
     public DateTime CreatedDate { get; set; }
     public DateTime DeadLine { get; set; }
 
     public RequestStatus Status { get; private set; } = RequestStatus.New;
+    public DateTime? CompletedDate { get; set; }
 
-    public void Assign(in Employee employee)
+    public void Initialize(int authorId, int? assigneId, in string? description, in DateTime createdDate, in TimeSpan period, RequestStatus? status, DateTime? completedDate)
     {
-        if (AssigneeId != default)
-            throw new Exception("Request already has a assignee.");
+        AuthorId = authorId;
+        AssigneeId = assigneId;
+        Description = description;
+        SetDates(in createdDate, in period);
+        Status = status == null ? RequestStatus.New : status.Value;
+        CompletedDate = completedDate;
+    }
 
-        Assignee = employee;
+    public void SetDates(in DateTime createdDate, in TimeSpan period)
+    {
+        CreatedDate = createdDate;
+        DeadLine = CreatedDate + period;
+    }
+
+    public void Assign(int employeeId)
+    {
+        AssigneeId = employeeId;
     }
 
     public void ChangeStatus(RequestStatus newStatus)
@@ -33,5 +48,8 @@ public class Request
             throw new InvalidOperationException();
 
         Status = newStatus;
+
+        if (Status == RequestStatus.Completed)
+            CompletedDate = DateTime.UtcNow;
     }
 }
