@@ -24,7 +24,7 @@ public class EmployeesController : ControllerBase
     }
 
     [HttpPost()]
-    public async Task<IActionResult> Create([FromBody] EmployeeCreateRequest request)
+    public async Task<ActionResult<EmployeeDto[]>> Create([FromBody] EmployeeCreateRequest request)
     {
         List<Employee> employees = new(request.Count);
 

@@ -1,3 +1,7 @@
+using App.Features.Department.Handlers;
+using App.Features.Employee.Handlers;
+using App.Features.Position.Handlers;
+using App.Features.Request.Handlers;
 using App.Interfaces;
 using Inf.Context;
 using Inf.Services;
@@ -23,6 +27,21 @@ public class Program
             provider.GetRequiredService<TaskTrackerContext>());
 
         builder.Services.AddScoped<DataSeeder>();
+
+        builder.Services.AddScoped<CreateEmployeesHandler>();
+        builder.Services.AddScoped<GetEmployeeHandler>();
+
+        builder.Services.AddScoped<CreateDepartmentHandler>();
+        builder.Services.AddScoped<GetDepartmentHandler>();
+
+        builder.Services.AddScoped<CreatePositionHandler>();
+        builder.Services.AddScoped<GetPositionHandler>();
+
+        builder.Services.AddScoped<GetRequestsByFilterHandler>();
+        builder.Services.AddScoped<ChangeAssigneeHandler>();
+        builder.Services.AddScoped<CreateRequestsHandler>();
+        builder.Services.AddScoped<ChangeStatusHandler>();
+        builder.Services.AddScoped<GetReportsHandler>();
 
         var app = builder.Build();
 
