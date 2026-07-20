@@ -1,12 +1,13 @@
 using App.Interfaces;
 using Inf.Context;
+using Inf.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace API;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,8 @@ public class Program
         builder.Services.AddScoped<IDbContext>(provider => 
             provider.GetRequiredService<TaskTrackerContext>());
 
+        builder.Services.AddScoped<DataSeeder>();
+
         var app = builder.Build();
 
         if (app.Environment.IsDevelopment())
@@ -28,10 +31,14 @@ public class Program
             app.UseSwagger();
             app.UseSwaggerUI();
 
-            using var scope = app.Services.CreateScope();
+            await using var scope = app.Services.CreateAsyncScope();
 
             var context = scope.ServiceProvider.GetRequiredService<TaskTrackerContext>();
             context.Database.Migrate();
+
+            var dataSeeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
+            
+            await dataSeeder.Seed();
         }
 
         app.UseRouting();
