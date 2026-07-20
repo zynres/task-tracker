@@ -9,21 +9,19 @@ public class Program
     {
         var client = Http.CreateDefaultClient();
 
-        var scenario =
-            Scenario.Create("Post Employees", async context =>
-            {
-                var request = Http.CreateRequest(
-                    "POST",
-                    "http://localhost:5100/api/employee/count/1");
-
-                return await Http.Send(client, request);
-            })
-            .WithLoadSimulations(
-                Simulation.Inject(
-                    rate: 10000,
-                    interval: TimeSpan.FromSeconds(1),
-                    during: TimeSpan.FromSeconds(30))
-            );
+        var scenario = Scenario.Create("Test Performance", async context =>
+        {
+            var request = Http.CreateRequest(
+                    "GET", 
+                    "http://localhost:5100/api/request/filter?assigneeId=3916&status=InProgress&isOverdue=true");
+            
+            return await Http.Send(client, request);
+        })
+        .WithWarmUpDuration(TimeSpan.FromSeconds(5))
+        .WithLoadSimulations(Simulation.Inject(
+            rate: 10,
+            interval: TimeSpan.FromSeconds(1),
+            during: TimeSpan.FromSeconds(30)));
 
         NBomberRunner
             .RegisterScenarios(scenario)
