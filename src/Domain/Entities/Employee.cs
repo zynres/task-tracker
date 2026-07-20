@@ -14,7 +14,15 @@ public class Employee
     public int PositionId { get; set; }
     public Position? Position { get; set; }
 
-    public int? AssignetRequestId { get; set; }
-    public Request? AssignetRequest { get; set; }
-    public List<Request> Requests = [];
+    public List<Request> AssignedRequests { get; set; } = [];
+    public List<Request> Requests { get; set; } = [];
+
+    public void Initialize(string? name, string? lastName, string? patronymic, int departmentId, int positionId)
+    {
+        Name = name;
+        LastName = lastName;
+        Patronymic = patronymic;
+        DepartmentId = departmentId;
+        PositionId = positionId;
+    }
 }
