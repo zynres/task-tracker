@@ -36,15 +36,22 @@ public class TaskTrackerContext : DbContext, IDbContext
             .WithOne(re => re.Author)
             .HasForeignKey(re => re.AuthorId);
         employeeBuilder
-            .HasOne(em => em.AssignetRequest)
+            .HasMany(em => em.AssignedRequests)
             .WithOne(re => re.Assignee)
-            .HasForeignKey<Request>(re => re.AssigneeId);
+            .HasForeignKey(re => re.AssigneeId);
 
         EntityTypeBuilder<Request> requestBuilder = builder.Entity<Request>();
-        
+        requestBuilder
+            .HasIndex(r => new
+            {
+                r.AssigneeId,
+                r.Status,
+                r.DeadLine
+            });
+
         EntityTypeBuilder<Department> depatmentBuilder = builder.Entity<Department>();
         depatmentBuilder.HasData(DepartmentSeed.Data);
-        
+
         EntityTypeBuilder<Position> positionBuilder = builder.Entity<Position>();
         positionBuilder.HasData(PositionSeed.Data);
     }
