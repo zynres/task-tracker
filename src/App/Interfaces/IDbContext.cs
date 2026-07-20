@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore;
 using Domain.Entities;
 
@@ -11,4 +12,5 @@ public interface IDbContext
     DbSet<Position> Positions { get; set; }
 
     Task<int> SaveChangesAsync();
+    ChangeTracker GetChangeTracker();
 }

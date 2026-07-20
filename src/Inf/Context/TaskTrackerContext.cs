@@ -1,8 +1,9 @@
-using Microsoft.EntityFrameworkCore;
-using App.Interfaces;
-using Domain.Entities;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore;
 using Inf.Context.Seed;
+using Domain.Entities;
+using App.Interfaces;
 
 namespace Inf.Context;
 
@@ -18,6 +19,11 @@ public class TaskTrackerContext : DbContext, IDbContext
     public async Task<int> SaveChangesAsync()
     {
         return await base.SaveChangesAsync();
+    }
+
+    public ChangeTracker GetChangeTracker()
+    {
+        return ChangeTracker;
     }
 
     protected override void OnModelCreating(ModelBuilder builder)
