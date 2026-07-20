@@ -7,20 +7,20 @@ using App.Interfaces;
 namespace API.Controllers;
 
 [ApiController]
-[Route("api/position")]
-public class PositionController : ControllerBase
+[Route("api/[controller]")]
+public class PositionsController : ControllerBase
 {
-    private readonly ILogger<PositionController> logger;
+    private readonly ILogger<PositionsController> logger;
     private readonly IDbContext context;
 
-    public PositionController(ILogger<PositionController> logger, IDbContext context)
+    public PositionsController(ILogger<PositionsController> logger, IDbContext context)
     {
         this.context = context;
         this.logger = logger; 
     }
 
-    [HttpPost("count/{count}")]
-    public async Task<ActionResult<PositionDto>> Create(int count, [FromBody] string name)
+    [HttpPost()]
+    public async Task<ActionResult<PositionDto>> Create([FromBody] int count, [FromBody] string name)
     {
         var positions = new Position[count];
 

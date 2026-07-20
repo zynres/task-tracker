@@ -12,7 +12,7 @@ public class Program
         var scenario = Scenario.Create("Test Performance", async context =>
         {
             var request = Http.CreateRequest(
-                    "GET", 
+                    "GET",                        // change the assignee id to your
                     "http://localhost:5100/api/request/filter?assigneeId=3916&status=InProgress&isOverdue=true");
             
             return await Http.Send(client, request);

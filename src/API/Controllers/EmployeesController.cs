@@ -11,40 +11,40 @@ using App.Interfaces;
 namespace API.Controllers;
 
 [ApiController]
-[Route("api/employees")]
-public class EmployeeController : ControllerBase
+[Route("api/[controller]")]
+public class EmployeesController : ControllerBase
 {
-    private readonly ILogger<EmployeeController> logger;
+    private readonly ILogger<EmployeesController> logger;
     private readonly IDbContext context;
 
-    public EmployeeController(ILogger<EmployeeController> logger, IDbContext context)
+    public EmployeesController(ILogger<EmployeesController> logger, IDbContext context)
     {
         this.context = context;
         this.logger = logger;
     }
 
-    [HttpPost("department/{departmentId}/position/{positionId}")]
-    public async Task<IActionResult> Create(int departmentId, int positionId, [FromQuery] int count, [FromQuery] int? assignetRequestId, [FromBody] EmployeeCreateRequest request)
+    [HttpPost()]
+    public async Task<IActionResult> Create([FromBody] EmployeeCreateRequest request)
     {
-        List<Employee> employees = new(count);
+        List<Employee> employees = new(request.Count);
 
-        var department = await context.Departments.AsNoTracking().FirstOrDefaultAsync(department => department.Id == departmentId);
+        var department = await context.Departments.AsNoTracking().FirstOrDefaultAsync(department => department.Id == request.DepartmentId);
 
         if (department == null)
             return NotFound("Department not found");
 
-        var position = await context.Positions.AsNoTracking().FirstOrDefaultAsync(position => position.Id == positionId);
+        var position = await context.Positions.AsNoTracking().FirstOrDefaultAsync(position => position.Id == request.PositionId);
 
         if (position == null)
             return NotFound("Position not found");
 
-        for (int i = 0; i < count; i++)
+        for (int i = 0; i < request.Count; i++)
         {
             var employee = new Employee();
 
             employee.Initialize(
                 request.Name, request.LastName, request.Patronymic,
-                departmentId, positionId);
+                request.DepartmentId, request.PositionId);
             employees.Add(employee);
         }
 
@@ -52,9 +52,9 @@ public class EmployeeController : ControllerBase
 
         await context.SaveChangesAsync();
 
-        var dtos = new EmployeeDto[count];
+        var dtos = new EmployeeDto[request.Count];
 
-        for (int i = 0; i < count; i++)
+        for (int i = 0; i < request.Count; i++)
         {
             var employee = employees[i];
 
@@ -64,10 +64,10 @@ public class EmployeeController : ControllerBase
                 employee.LastName,
                 employee.Patronymic,
                 new DepartmentDto(
-                    departmentId,
+                    request.DepartmentId,
                     department.Name),
                 new PositionDto(
-                    positionId,
+                    request.PositionId,
                     position.Name),
                 []);
         }

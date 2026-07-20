@@ -10,39 +10,41 @@ using App.Interfaces;
 namespace API.Controllers;
 
 [ApiController]
-[Route("api/request")]
-public class RequestController : ControllerBase
+[Route("api/[controller]")]
+public class RequestsController : ControllerBase
 {
-    private readonly ILogger<RequestController> logger;
+    private readonly ILogger<RequestsController> logger;
     private readonly IDbContext context;
 
-    public RequestController(ILogger<RequestController> logger, IDbContext context)
+    public RequestsController(ILogger<RequestsController> logger, IDbContext context)
     {
         this.context = context;
         this.logger = logger;
     }
 
-    [HttpPost("author/{authorId}/assignee/{assigneeId}/count/{count}")]
-    public async Task<ActionResult<RequestDto[]>> Create(int authorId, int? assigneeId, [FromBody] CreateRequest command, int count)
+    [HttpPost()]
+    public async Task<ActionResult<RequestDto[]>> Create([FromBody] CreateRequest command)
     {
         var author = await context.Employees
             .AsNoTracking()
-            .FirstOrDefaultAsync(employee => employee.Id == authorId);
+            .FirstOrDefaultAsync(employee => employee.Id == command.AuthorId);
 
         if (author == null)
             return NotFound("Employee not found");
 
+        int? assigneeId = command.AssigneeId;
+
         if (assigneeId != null && !await context.Employees.AnyAsync(employee => employee.Id == assigneeId))
             assigneeId = null;
 
-        List<Request> requests = new(count);
+        List<Request> requests = new(command.Count);
 
-        for (int i = 0; i < count; i++)
+        for (int i = 0; i < command.Count; i++)
         {
             var request = new Request();
 
             request.Initialize(
-                authorId, assigneeId, command.Description,
+                command.AuthorId, assigneeId, command.Description,
                 DateTime.UtcNow, command.ValidityPeriod,
                 command.Status, null);
             requests.Add(request);
@@ -52,9 +54,9 @@ public class RequestController : ControllerBase
 
         await context.SaveChangesAsync();
 
-        var dtos = new RequestDto[count];
+        var dtos = new RequestDto[command.Count];
 
-        for (int i = 0; i < count; i++)
+        for (int i = 0; i < command.Count; i++)
         {
             var request = requests[i];
 

@@ -7,20 +7,20 @@ using App.Interfaces;
 namespace API.Controllers;
 
 [ApiController]
-[Route("api/department")]
-public class DepartmentController : ControllerBase
+[Route("api/[controller]")]
+public class DepartmentsController : ControllerBase
 {
-    private readonly ILogger<DepartmentController> logger;
+    private readonly ILogger<DepartmentsController> logger;
     private readonly IDbContext context;
 
-    public DepartmentController(ILogger<DepartmentController> logger, IDbContext context)
+    public DepartmentsController(ILogger<DepartmentsController> logger, IDbContext context)
     {
         this.context = context;
         this.logger = logger;
     }
 
-    [HttpPost("count/{count}")]
-    public async Task<ActionResult<DepartmentDto>> Create(int count, [FromBody] string name)
+    [HttpPost()]
+    public async Task<ActionResult<DepartmentDto>> Create([FromBody] int count, [FromBody] string name)
     {
         var departments = new Department[count];
 
