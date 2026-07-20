@@ -20,35 +20,20 @@ public class DepartmentsController : ControllerBase
     }
 
     [HttpPost()]
-    public async Task<ActionResult<DepartmentDto>> Create([FromBody] int count, [FromBody] string name)
+    public async Task<ActionResult<DepartmentDto>> Create([FromBody] string name)
     {
-        var departments = new Department[count];
-
-        for (int i = 0; i < count; i++)
+        var department = new Department()
         {
-            var department = new Department()
-            {
-                Name = name
-            };
-            departments[i] = department;
-        }
+            Name = name
+        };
 
-        context.Departments.AddRange(departments);
+        context.Departments.Add(department);
 
         await context.SaveChangesAsync();
 
-        var departmentDtos = new DepartmentDto[count];
-
-        for (int i = 0; i < count; i++)
-        {
-            Department department = departments[i];
-            
-            departmentDtos[i] = new DepartmentDto(
-                department.Id, 
-                department.Name);
-        }
-
-        return Ok(departmentDtos);
+        return Ok(new DepartmentDto(
+                department.Id,
+                department.Name));
     }
 
     [HttpGet("{departmentId}")]

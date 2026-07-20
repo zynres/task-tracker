@@ -16,39 +16,24 @@ public class PositionsController : ControllerBase
     public PositionsController(ILogger<PositionsController> logger, IDbContext context)
     {
         this.context = context;
-        this.logger = logger; 
+        this.logger = logger;
     }
 
     [HttpPost()]
-    public async Task<ActionResult<PositionDto>> Create([FromBody] int count, [FromBody] string name)
+    public async Task<ActionResult<PositionDto>> Create([FromBody] string name)
     {
-        var positions = new Position[count];
-
-        for (int i = 0; i < count; i++)
+        var position = new Position()
         {
-            var position = new Position()
-            {
-                Name = name
-            };
-            positions[i] = position;
-        }
+            Name = name
+        };
 
-        context.Positions.AddRange(positions);
+        context.Positions.Add(position);
 
         await context.SaveChangesAsync();
 
-        var positionDtos = new PositionDto[count];
-
-        for (int i = 0; i < count; i++)
-        {
-            Position position = positions[i];
-            
-            positionDtos[i] = new PositionDto(
-                position.Id, 
-                position.Name);
-        }
-
-        return Ok(positionDtos);
+        return Ok(new PositionDto(
+                position.Id,
+                position.Name));
     }
 
     [HttpGet("{positionId}")]

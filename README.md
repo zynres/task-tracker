@@ -63,14 +63,14 @@ The application exposes a RESTful API for managing employees, departments, posit
 
 | Method | Endpoint | Description |
 |---------|----------|-------------|
-| POST | /api/departments | Creates one or more departments. |
+| POST | /api/departments | Creates one department. |
 | GET | /api/departments/{departmentId} | Retrieves a department by its identifier. |
 
 #### Positions
 
 | Method | Endpoint | Description |
 |---------|----------|-------------|
-| POST | /api/positions | Creates one or more positions. |
+| POST | /api/positions | Creates one position. |
 | GET | /api/positions/{positionId} | Retrieves a position by its identifier. |
 
 #### Requests
