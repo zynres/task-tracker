@@ -3,6 +3,7 @@ using System;
 using Inf.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Inf.Context.Migrations
 {
     [DbContext(typeof(TaskTrackerContext))]
-    partial class TaskTrackerContextModelSnapshot : ModelSnapshot
+    [Migration("20260718113855_AddRequestCompletedDate")]
+    partial class AddRequestCompletedDate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -98,6 +101,9 @@ namespace Inf.Context.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("AssignedRequestId")
+                        .HasColumnType("integer");
 
                     b.Property<int>("DepartmentId")
                         .HasColumnType("integer");
@@ -209,9 +215,10 @@ namespace Inf.Context.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AuthorId");
+                    b.HasIndex("AssigneeId")
+                        .IsUnique();
 
-                    b.HasIndex("AssigneeId", "Status", "DeadLine");
+                    b.HasIndex("AuthorId");
 
                     b.ToTable("Requests");
                 });
@@ -238,8 +245,8 @@ namespace Inf.Context.Migrations
             modelBuilder.Entity("Domain.Entities.Request", b =>
                 {
                     b.HasOne("Domain.Entities.Employee", "Assignee")
-                        .WithMany("AssignedRequests")
-                        .HasForeignKey("AssigneeId");
+                        .WithOne("AssignedRequest")
+                        .HasForeignKey("Domain.Entities.Request", "AssigneeId");
 
                     b.HasOne("Domain.Entities.Employee", "Author")
                         .WithMany("Requests")
@@ -254,7 +261,7 @@ namespace Inf.Context.Migrations
 
             modelBuilder.Entity("Domain.Entities.Employee", b =>
                 {
-                    b.Navigation("AssignedRequests");
+                    b.Navigation("AssignedRequest");
 
                     b.Navigation("Requests");
                 });

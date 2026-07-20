@@ -3,6 +3,7 @@ using System;
 using Inf.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Inf.Context.Migrations
 {
     [DbContext(typeof(TaskTrackerContext))]
-    partial class TaskTrackerContextModelSnapshot : ModelSnapshot
+    [Migration("20260718224301_EmployeeCanHaveManyAssignedRequest")]
+    partial class EmployeeCanHaveManyAssignedRequest
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -209,9 +212,9 @@ namespace Inf.Context.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AuthorId");
+                    b.HasIndex("AssigneeId");
 
-                    b.HasIndex("AssigneeId", "Status", "DeadLine");
+                    b.HasIndex("AuthorId");
 
                     b.ToTable("Requests");
                 });
