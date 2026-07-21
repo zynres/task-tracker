@@ -13,7 +13,7 @@ public class Program
         {
             var request = Http.CreateRequest(
                     "GET",                        // change the assignee id to your
-                    "http://localhost:5100/api/request/filter?assigneeId=3916&status=InProgress&isOverdue=true");
+                    "http://localhost:5100/api/requests/filter?assigneeId=1000&status=InProgress&isOverdue=true");
             
             return await Http.Send(client, request);
         })
