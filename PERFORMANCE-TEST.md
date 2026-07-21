@@ -30,19 +30,19 @@
 
 ## Database Optimization
 
-A composite index on **(AssigneeId, Status, Deadline)** was introduced to optimize the most frequently executed filtering query.
+A composite index on **(AssigneeId, Status, DeadLine)** was introduced to optimize the most frequently executed filtering query.
 
-Before optimization, PostgreSQL used the index on `AssigneeId`, but still had to read **1,074 index entries**, access **1,047 heap pages**, and discard **811 rows** during additional filtering because the remaining conditions were evaluated after the index lookup.
+Before optimization, PostgreSQL used the index on `AssigneeId`, but still had to read **1,074 index entries**, access **1,047 heap pages**, and discard **790 rows** during additional filtering because the remaining conditions were evaluated after the index lookup.
 
-The composite index allowed PostgreSQL to eliminate a significant portion of unnecessary reads directly at the index level.
+The composite index allowed PostgreSQL to apply all filtering conditions directly through the index, significantly reducing the number of index entries and heap pages that had to be accessed.
 
 As a result:
 
 | Metric                                 |   Before |   After |
 | -------------------------------------- | -------: | ------: |
-| Index entries read                     |    1,074 |     263 |
-| Heap pages accessed                    |    1,047 |     261 |
-| SQL execution time (`EXPLAIN ANALYZE`) | 122.5 ms | 0.64 ms |
+| Index entries read                     |    1,074 |     242 |
+| Heap pages accessed                    |    1,047 |     241 |
+| SQL execution time (`EXPLAIN ANALYZE`) |   2.5 ms | 0.50 ms |
 | Average HTTP latency (NBomber)         |  7.37 ms | 6.41 ms |
 
 Additionally, `AsNoTracking()` is used for read-only queries to avoid Entity Framework Core change tracking overhead for entities that are not modified.
