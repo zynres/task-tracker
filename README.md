@@ -1,6 +1,6 @@
 # Task Tracker
 
-Task Tracker is a REST API for managing employee requests. The project was developed as a technical assessment for `PTMK` based on the requirements described in [Task Description](Task-Description.md).
+Task Tracker is a REST API for managing employee requests. The project was developed as a technical assessment for `PTMK` based on the requirements described in [Task Description](Task-Description.md) and [Performance Test](PERFORMANCE-TEST.md) was supposed to be conducted.
 
 ### Business Process
 
